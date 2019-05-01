@@ -125,7 +125,7 @@ public class Bank {
 				Transaction newTrans = new Transaction(from, to, transferMoney);
 				blockQ.put(newTrans);
 			}
-			
+			br.close();
 			addNulTrans(numberOfWorkers);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
