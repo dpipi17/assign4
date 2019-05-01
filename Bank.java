@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +9,9 @@ import java.util.concurrent.CountDownLatch;
 public class Bank {
 	
 	// private instance variables
-	private static BlockingQueue<Transaction> blockQ;
-	private static List<Account> accList;
-	private static CountDownLatch allFinished;
+	private BlockingQueue<Transaction> blockQ;
+	private List<Account> accList;
+	private CountDownLatch allFinished;
 	
 	private static final int NUMBER_OF_ACCOUNTS = 20;
 	private static final int START_CASH = 1000;
@@ -26,6 +25,34 @@ public class Bank {
 		
 		createAccounts();
 		startWorkers(numberOfWorkers);	
+	}
+	
+	// adds new transaction into blocking queue
+	public void addIntoBlockQ(Transaction newTrans) {
+		// TODO Auto-generated method stub
+		try {
+			blockQ.put(newTrans);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// main thread waits on this CountDownLatch
+	public void waitOnAllFinished() {
+		try {
+			allFinished.await();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+	}
+	
+	// after all prints accounts balances 
+	public void printResults() {
+		for(int i = 0; i < accList.size(); i++) {
+			System.out.println(accList.get(i));
+		}
 	}
 	
 	// creates new Accounts
@@ -44,27 +71,13 @@ public class Bank {
 		}
 	}
 
-	// main thread waits on this CountDownLatch
-	private static void waitOnAllFinished() {
-		try {
-			allFinished.await();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}		
-	}
 	
 	// add Special transactions in Blocking queue for workers.
 	// using this symbol worker finishes work.
-	private static void addNulTrans(int numberOfWorkers) {
+	private static void addNulTrans(int numberOfWorkers, Bank bank) {
 		for(int i = 0; i < numberOfWorkers; i++) {
 			Transaction nullTrans = new Transaction(BREAK_SYMBOL,0,0);
-			try {
-				blockQ.put(nullTrans);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			bank.addIntoBlockQ(nullTrans);
 		}
 	}
 
@@ -96,12 +109,6 @@ public class Bank {
 		}
 	}
 	
-	// after all prints accounts balances 
-	private static void printResults() {
-		for(int i = 0; i < accList.size(); i++) {
-			System.out.println(accList.get(i));
-		}
-	}
 
 	// main method
 	public static void main(String[] args) {
@@ -123,18 +130,19 @@ public class Bank {
 				int transferMoney = Integer.parseInt(transactionsDetails[2]);
 				
 				Transaction newTrans = new Transaction(from, to, transferMoney);
-				blockQ.put(newTrans);
+				bank.addIntoBlockQ(newTrans);
 			}
 			br.close();
-			addNulTrans(numberOfWorkers);
+			addNulTrans(numberOfWorkers, bank);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		// wait workers to finish work
-		waitOnAllFinished();
-		printResults();
+		bank.waitOnAllFinished();
+		bank.printResults();
 	}
+
 
 }
