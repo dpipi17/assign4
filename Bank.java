@@ -57,7 +57,7 @@ public class Bank {
 	
 	// creates new Accounts
 	private void createAccounts() {
-		for(int i = 1; i <= NUMBER_OF_ACCOUNTS; i++) {
+		for(int i = 0; i < NUMBER_OF_ACCOUNTS; i++) {
 			Account newAccount = new Account(i, START_CASH);
 			accList.add(newAccount);
 		}	

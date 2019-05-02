@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class Cracker {
 	// Array of chars used to produce strings
 	public static final char[] CHARS = "abcdefghijklmnopqrstuvwxyz0123456789.,-!".toCharArray();	
@@ -31,6 +34,17 @@ public class Cracker {
 		}
 		return result;
 	}
+	
+	// main method
+	public static void main(String[] args) {
+		if(args.length == 1) {
+			 
+		} else {
+			
+		}
+			
+	}
+
 	
 	// possible test values:
 	// a 86f7e437faa5a7fce15d1ddcb9eaeaea377667b8
