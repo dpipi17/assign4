@@ -11,9 +11,7 @@ public class Cracker {
 	private String passwordHash;
 	private int maxLength;
 	private CountDownLatch allFinished;
-	private String result;
-	private boolean found;
-	
+
 	/*
 	 Given a byte[] array, produces a hex String,
 	 such as "234a6f". with 2 chars for each byte in the array.
@@ -49,8 +47,6 @@ public class Cracker {
 		this.passwordHash = passwordHash;
 		this.maxLength = maxLength;
 		allFinished = new CountDownLatch(numberOfWorkers);
-		result = "No result Found";
-		found = false;
 		
 		startWorkers(numberOfWorkers);
 	}
@@ -103,13 +99,6 @@ public class Cracker {
 		}		
 	}
 	
-	// after all prints result 
-	public void printResult() {
-		System.out.println(result);
-		System.out.println("all done");
-	}
-	
-
 
 	// inner Worker class
 	private class Worker extends Thread {
@@ -142,13 +131,11 @@ public class Cracker {
 		// recursion string generator
 		// searches password using dfs algorithm
 		private void recFinding(String currStr) {
-			// if we already found the password 
 			// or this string is larger than max Size, worker has to stop working
-			if(currStr.length() > maxLength || found) return;
+			if(currStr.length() > maxLength) return;
 			
 			if(match(currStr)) {
-				result = currStr;
-				found = true;
+				System.out.println(currStr);
 				return;
 			}
 			
@@ -180,7 +167,7 @@ public class Cracker {
 			Cracker crack = new Cracker();
 			crack.findPassword(passwordHash, maxLength, numberOfWorkers);
 			crack.waitOnAllFinished();
-			crack.printResult();
+			System.out.println("all done");
 		} else {
 			System.out.println("Invalid Arguments");
 		}
