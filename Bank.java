@@ -29,11 +29,9 @@ public class Bank {
 	
 	// adds new transaction into blocking queue
 	public void addIntoBlockQ(Transaction newTrans) {
-		// TODO Auto-generated method stub
 		try {
 			blockQ.put(newTrans);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -43,7 +41,6 @@ public class Bank {
 		try {
 			allFinished.await();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}		
 	}
@@ -99,7 +96,6 @@ public class Bank {
 					accList.get(currTrans.getFromId()).changeBalance(-currTrans.getTransferMoney());
 					accList.get(currTrans.getToId()).changeBalance(currTrans.getTransferMoney());
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -112,7 +108,7 @@ public class Bank {
 
 	// main method
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		String fileName = args[0];
 		int numberOfWorkers = Integer.parseInt(args[1]);
 		Bank bank = new Bank(numberOfWorkers); 
@@ -135,7 +131,6 @@ public class Bank {
 			br.close();
 			addNulTrans(numberOfWorkers, bank);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
